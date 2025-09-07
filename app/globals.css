@@ -22,10 +22,16 @@
   }
 }
 
+html,
+body {
+  touch-action: manipulation; /* 터치 시 줌 막기 */
+}
+
 @theme {
   /* 색상 설정 */
   --color-primary: #9ebdc8;
   --color-secondary: #efe9d3;
+  --color-tertiary: #ad8b73;
 
   /* 폰트 설정 */
   --font-kyobo: "KyoboHandwriting2024psw";
