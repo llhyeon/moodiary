@@ -1,8 +1,8 @@
 "use client";
 
-import { error } from "console";
-import { SetStateAction, use, useState } from "react";
-import { emailVaildate, idValidate, pwValidate } from "~/app/utils/validation";
+import axios from "axios";
+import { SetStateAction, useMemo, useState } from "react";
+import { emailVaildate, pwValidate } from "~/app/utils/validation";
 import SignButton from "~/components/sign/SignButton";
 import SignInput from "~/components/sign/SignInput";
 
@@ -30,6 +30,7 @@ function RegisterContainer() {
   const [pw, setPw] = useState("");
   const [pwConfirm, setPwConfirm] = useState("");
 
+  // 이메일, 비밀번호, 비밀번호 확인 유효성 검사
   const handleCheckValid = (
     key: "email" | "pw" | "pwConfirm",
     value: string,
@@ -57,8 +58,34 @@ function RegisterContainer() {
     }
   };
 
+  // 회원가입 제출
+  const userData = {
+    email,
+    password: pw,
+  };
+
+  const handleSubmit = async (e: React.FormEvent, data: { email: string; password: string }) => {
+    e.preventDefault();
+    const res = await axios.post("/api/register", data);
+  };
+
+  // 모두 입력하고 에러가 없을 때 버튼 enable
+  const isDisabled = useMemo(() => {
+    if (
+      Object.values(error).filter(Boolean).length === 0 &&
+      email.length &&
+      pw.length &&
+      pwConfirm.length
+    ) {
+      return false;
+    }
+    return true;
+  }, [email, pw, pwConfirm, error]);
+
   return (
-    <form className="flex flex-col mt-20 w-[80%] mx-auto">
+    <form
+      className="flex flex-col mt-20 w-[80%] mx-auto"
+      onSubmit={(e) => handleSubmit(e, userData)}>
       <SignInput
         buttonShow
         text="중복확인"
@@ -88,7 +115,7 @@ function RegisterContainer() {
         비밀번호 확인
       </SignInput>
       <ErrorMessage isShow={error.pwConfirm ? true : false}>{error.pwConfirm}</ErrorMessage>
-      <SignButton className="mt-20" type="submit">
+      <SignButton className={"mt-20"} type="submit" isDisabled={isDisabled}>
         회원가입
       </SignButton>
     </form>
