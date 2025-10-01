@@ -8,9 +8,10 @@ interface Props extends ComponentProps<"input"> {
   className?: string;
   buttonShow?: boolean;
   text?: string | number;
+  buttonEvent?: () => void;
 }
 
-function SignInput({ children, className, buttonShow = false, text, ...rest }: Props) {
+function SignInput({ children, className, buttonShow = false, text, buttonEvent, ...rest }: Props) {
   const id = useId();
 
   return (
@@ -20,7 +21,11 @@ function SignInput({ children, className, buttonShow = false, text, ...rest }: P
       </label>
       <div className="flex gap-2">
         <input className="flex-1 bg-white rounded-md py-2 px-3 text-lg" {...rest} id={id} />
-        <SignButton className={`px-2 ${buttonShow ? "block" : "hidden"}`}>{text}</SignButton>
+        {buttonShow && (
+          <SignButton className={`px-2`} type="button" onClick={buttonEvent}>
+            {text}
+          </SignButton>
+        )}
       </div>
     </div>
   );
