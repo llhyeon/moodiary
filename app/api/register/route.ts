@@ -4,7 +4,7 @@ import { createClient } from "~/app/utils/supabase/server";
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
   try {
-    const { email, password } = await req.json();
+    const { nickname, email, password } = await req.json();
 
     if (!email || !password) {
       return NextResponse.json({ error: "이메일과 비밀번호를 모두 입력해주세요" }, { status: 400 });
@@ -18,6 +18,15 @@ export async function POST(req: NextRequest) {
     if (error) {
       return NextResponse.json({ message: error.message }, { status: 400 });
     }
+
+    const { error: usersError } = await supabase.from("users").insert([
+      {
+        id: data.user?.id,
+        nickname,
+      },
+    ]);
+
+    if (usersError) return NextResponse.json({ message: usersError.message }, { status: 400 });
 
     return NextResponse.json({ user: data.user }, { status: 200 });
   } catch (error) {

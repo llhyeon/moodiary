@@ -1,6 +1,7 @@
 "use client";
 
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import { SetStateAction, useMemo, useState } from "react";
 import { emailVaildate, pwValidate } from "~/app/utils/validation";
 import SignButton from "~/components/sign/SignButton";
@@ -30,6 +31,8 @@ function RegisterContainer() {
   const [nickname, setNickname] = useState("");
   const [pw, setPw] = useState("");
   const [pwConfirm, setPwConfirm] = useState("");
+
+  const router = useRouter();
 
   // 중복확인 여부
   const [checkedDuplicate, setCheckedDuplicate] = useState(false);
@@ -70,6 +73,8 @@ function RegisterContainer() {
       });
       const data = await response.json();
 
+      console.log(data);
+
       if (response.status === 200) {
         setCheckedDuplicate(true);
         alert(data.message);
@@ -83,13 +88,36 @@ function RegisterContainer() {
 
   // 회원가입 제출
   const userData = {
+    nickname,
     email,
     password: pw,
   };
 
-  const handleSubmit = async (e: React.FormEvent, data: { email: string; password: string }) => {
+  const handleSubmit = async (
+    e: React.FormEvent,
+    data: { nickname: string; email: string; password: string }
+  ) => {
     e.preventDefault();
-    const res = await axios.post("/api/register", data);
+    try {
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+      const message = result.message;
+
+      if (response.status === 200) {
+        router.push("/login");
+      } else {
+        console.error(`회원가입 에러 발생 : ${message} - ${response.status}`);
+      }
+    } catch (error) {
+      console.error("서버 에러 발생: ", error);
+    }
   };
 
   // 모두 입력하고 에러가 없을 때 버튼 enable

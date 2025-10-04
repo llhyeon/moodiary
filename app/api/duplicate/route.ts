@@ -17,6 +17,7 @@ export async function POST(req: NextRequest) {
     }
 
     const { data, error } = await supabase.from("users").select().eq("nickname", nickname);
+    console.log(data);
 
     if (error) throw error;
 
