@@ -6,7 +6,13 @@ import { emailVaildate, pwValidate } from "~/app/utils/validation";
 import SignButton from "~/components/sign/SignButton";
 import SignInput from "~/components/sign/SignInput";
 
-function ErrorMessage({ children, isShow = false }: { children: React.ReactNode; isShow: boolean }) {
+function ErrorMessage({
+  children,
+  isShow = false,
+}: {
+  children: React.ReactNode;
+  isShow: boolean;
+}) {
   return <p className={`text-red-600 text-sm`}>{isShow ? children : ""}</p>;
 }
 
@@ -25,8 +31,15 @@ function RegisterContainer() {
   const [pw, setPw] = useState("");
   const [pwConfirm, setPwConfirm] = useState("");
 
+  // 중복확인 여부
+  const [checkedDuplicate, setCheckedDuplicate] = useState(false);
+
   // 이메일, 비밀번호, 비밀번호 확인 유효성 검사
-  const handleCheckValid = (key: "email" | "pw" | "pwConfirm", value: string, setter: React.Dispatch<SetStateAction<string>>) => {
+  const handleCheckValid = (
+    key: "email" | "pw" | "pwConfirm",
+    value: string,
+    setter: React.Dispatch<SetStateAction<string>>
+  ) => {
     setter(value);
     switch (key) {
       case "email":
@@ -49,7 +62,6 @@ function RegisterContainer() {
     }
   };
   // 닉네임 중복확인 이벤트
-  //TODO useState로 중복확인 완료 상태 만들기
   const handleCheckDuplicate = async () => {
     try {
       const response = await fetch("/api/duplicate", {
@@ -57,7 +69,13 @@ function RegisterContainer() {
         body: JSON.stringify({ nickname }),
       });
       const data = await response.json();
-      alert(data.message);
+
+      if (response.status === 200) {
+        setCheckedDuplicate(true);
+        alert(data.message);
+      } else {
+        alert(`${data.message} - ${response.status}`);
+      }
     } catch (error) {
       console.error("중복확인 에러 발생: ", error);
     }
@@ -76,14 +94,22 @@ function RegisterContainer() {
 
   // 모두 입력하고 에러가 없을 때 버튼 enable
   const isDisabled = useMemo(() => {
-    if (Object.values(error).filter(Boolean).length === 0 && email.length && pw.length && pwConfirm.length) {
+    if (
+      Object.values(error).filter(Boolean).length === 0 &&
+      email.length &&
+      pw.length &&
+      pwConfirm.length &&
+      checkedDuplicate
+    ) {
       return false;
     }
     return true;
-  }, [email, pw, pwConfirm, error]);
+  }, [email, pw, pwConfirm, error, checkedDuplicate]);
 
   return (
-    <form className="flex flex-col mt-20 w-[80%] mx-auto" onSubmit={(e) => handleSubmit(e, userData)}>
+    <form
+      className="flex flex-col mt-20 w-[80%] mx-auto"
+      onSubmit={(e) => handleSubmit(e, userData)}>
       <SignInput
         buttonShow
         buttonEvent={handleCheckDuplicate}
@@ -92,8 +118,7 @@ function RegisterContainer() {
         name="nickname"
         placeholder="닉네임을 입력해주세요"
         value={nickname}
-        onChange={(e) => setNickname(e.target.value)}
-      >
+        onChange={(e) => setNickname(e.target.value)}>
         닉네임
       </SignInput>
       <SignInput
@@ -101,8 +126,7 @@ function RegisterContainer() {
         name="nickname"
         placeholder="이메일을 입력해주세요"
         value={email}
-        onChange={(e) => handleCheckValid("email", e.target.value, setEmail)}
-      >
+        onChange={(e) => handleCheckValid("email", e.target.value, setEmail)}>
         이메일
       </SignInput>
       <ErrorMessage isShow={error.email ? true : false}>{error.email}</ErrorMessage>
@@ -111,8 +135,7 @@ function RegisterContainer() {
         name="password"
         placeholder="비밀번호를 입력해주세요"
         value={pw}
-        onChange={(e) => handleCheckValid("pw", e.target.value, setPw)}
-      >
+        onChange={(e) => handleCheckValid("pw", e.target.value, setPw)}>
         비밀번호
       </SignInput>
       <ErrorMessage isShow={error.pw ? true : false}>{error.pw}</ErrorMessage>
@@ -121,8 +144,7 @@ function RegisterContainer() {
         name="passwordConfirm"
         placeholder="비밀번호를 한 번 더 입력해주세요"
         value={pwConfirm}
-        onChange={(e) => handleCheckValid("pwConfirm", e.target.value, setPwConfirm)}
-      >
+        onChange={(e) => handleCheckValid("pwConfirm", e.target.value, setPwConfirm)}>
         비밀번호 확인
       </SignInput>
       <ErrorMessage isShow={error.pwConfirm ? true : false}>{error.pwConfirm}</ErrorMessage>
