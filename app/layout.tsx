@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ToastContainer } from "react-toastify";
 
 export const metadata: Metadata = {
   title: "Moodiary",
@@ -13,7 +14,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className="bg-secondary font-kyobo">{children}</body>
+      <body className="bg-secondary font-kyobo">
+        <ToastContainer position="top-center" autoClose={2000} limit={1} newestOnTop={false} />
+        {children}
+      </body>
     </html>
   );
 }

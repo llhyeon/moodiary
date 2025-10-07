@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import SignButton from "~/components/sign/SignButton";
 import SignInput from "~/components/sign/SignInput";
 
@@ -30,10 +31,11 @@ function LoginForm() {
 
       if (response.status === 200) {
         console.log("로그인 완료 :", loginData);
+        toast.success("로그인 성공");
         router.push("/main");
       } else if (response.status === 400) {
         console.error(loginData.message);
-        alert("로그인 정보가 올바르지 않습니다.");
+        toast.error("로그인 정보가 올바르지 않습니다.");
       }
     } catch (error) {
       console.error((error as Error).message);
