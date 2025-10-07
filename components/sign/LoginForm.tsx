@@ -1,14 +1,58 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import SignButton from "~/components/sign/SignButton";
 import SignInput from "~/components/sign/SignInput";
 
 function LoginForm() {
+  const [id, setId] = useState("");
+  const [pw, setPw] = useState("");
+
+  const router = useRouter();
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: id,
+          password: pw,
+        }),
+      });
+
+      const loginData = await response.json();
+
+      if (response.status === 200) {
+        console.log("로그인 완료 :", loginData);
+        router.push("/main");
+      }
+    } catch (error) {
+      console.error("로그인 중 에러가 발생하였습니다 :", error);
+      return;
+    }
+  };
+
   return (
-    <form className="flex flex-col gap-2 mt-20 w-[80%] mx-auto">
-      <SignInput name="id" placeholder="아이디를 입력해주세요">
+    <form className="flex flex-col gap-2 mt-20 w-[80%] mx-auto" onSubmit={handleLogin}>
+      <SignInput
+        value={id}
+        onChange={(e) => setId(e.target.value)}
+        name="id"
+        placeholder="아이디를 입력해주세요">
         아이디
       </SignInput>
-      <SignInput name="password" placeholder="비밀번호를 입력해주세요">
+      <SignInput
+        value={pw}
+        onChange={(e) => setPw(e.target.value)}
+        type="password"
+        name="password"
+        placeholder="비밀번호를 입력해주세요">
         비밀번호
       </SignInput>
       <p className="text-right text-sm">
