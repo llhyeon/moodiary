@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Spinner from "~/components/common/Spinner";
 import Profile from "~/components/main/Profile";
 import { useUserStore } from "~/store/useUserStore";
 
@@ -21,6 +22,7 @@ function MainContainer({ user }: Props) {
   return (
     <>
       <Profile />
+      {/* <Spinner /> */}
     </>
   );
 }
