@@ -12,6 +12,10 @@ export const useUserStore = create<UserStore>()(
       user: "",
       setUser: (user: string) => set({ user }),
     }),
-    { name: "currentUser", storage: createJSONStorage(() => sessionStorage) }
+    {
+      name: "currentUser",
+      partialize: (state) => ({ user: state.user }),
+      storage: createJSONStorage(() => sessionStorage),
+    }
   )
 );
