@@ -22,6 +22,18 @@
   }
 }
 
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 html,
 body {
   touch-action: manipulation; /* 터치 시 줌 막기 */
@@ -32,10 +44,13 @@ body {
   --color-primary: #9ebdc8;
   --color-secondary: #efe9d3;
   --color-tertiary: #ad8b73;
+  --color-main: #334443;
 
   /* 폰트 설정 */
   --font-kyobo: "KyoboHandwriting2024psw";
 
   /* 애니메이션 설정 */
   --animate-float: float infinite ease-in-out 2s;
+  --animate-fadeUp: fadeUp 1s ease-out forwards;
+  --animate-fadeUpThenFloat: fadeUp 1s ease-out forwards, 2s float infinite ease-in-out 1.2s;
 }

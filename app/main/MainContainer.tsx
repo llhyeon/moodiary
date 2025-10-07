@@ -13,7 +13,9 @@ function MainContainer({ user }: Props) {
 
   // 현재 로그인된 유저 전역으로 등록
   useEffect(() => {
-    setUser(user);
+    if (user) {
+      setUser(user);
+    }
   }, [user, setUser]);
 
   return (

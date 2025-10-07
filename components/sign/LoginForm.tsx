@@ -31,9 +31,12 @@ function LoginForm() {
       if (response.status === 200) {
         console.log("로그인 완료 :", loginData);
         router.push("/main");
+      } else if (response.status === 400) {
+        console.error(loginData.message);
+        alert("로그인 정보가 올바르지 않습니다.");
       }
     } catch (error) {
-      console.error("로그인 중 에러가 발생하였습니다 :", error);
+      console.error((error as Error).message);
       return;
     }
   };

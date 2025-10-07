@@ -13,12 +13,11 @@ export async function POST(req: NextRequest) {
     });
 
     if (error) {
-      return NextResponse.json({ message: "로그인 중 에러가 발생하였습니다." }, { status: 400 });
+      return NextResponse.json({ message: "로그인 정보가 올바르지 않습니다." }, { status: 400 });
     }
 
     return NextResponse.json({ message: "로그인 성공" }, { status: 200 });
   } catch (error) {
-    console.error("서버 에러 발생: ", error);
     return NextResponse.json({ message: `서버 에러가 발생하였습니다: ${error}` }, { status: 500 });
   }
 }
